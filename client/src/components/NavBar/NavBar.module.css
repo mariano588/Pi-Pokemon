@@ -1,0 +1,21 @@
+.container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    background-color: rgba(255, 125, 0, 0.87);
+}
+.texto{
+    display: flex;
+    font-family: sans-serif;
+    text-decoration: none;
+    text-decoration-line: none;
+    color:black;
+    align-items: center;
+    justify-content: center;
+}
+.div{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    font-family: sans-serif;
+}

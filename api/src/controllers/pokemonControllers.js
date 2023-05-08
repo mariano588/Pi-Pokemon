@@ -17,7 +17,7 @@ const getAllPokemons = async () => {
 }
 
 const getPokemonsApi = async () => {
-    const apiResponse = await (axios.get('https://pokeapi.co/api/v2/pokemon?offset=0&limit=50'));
+    const apiResponse = await (axios.get('https://pokeapi.co/api/v2/pokemon?offset=0&limit=100'));
     const response = Promise.all(apiResponse.data.results.map((poke) => {
         return  (axios.get(poke.url)).then((res) => {
             return {
@@ -31,7 +31,9 @@ const getPokemonsApi = async () => {
             height: res.data.height,
             weight: res.data.weight,
             created: false,
-            types: res.data.types.map((t) => t.type.name),
+            Types: res.data.types.map((t) => {
+                return{name: t.type.name};
+            }),
             }
         })
     }))
@@ -41,13 +43,22 @@ const getByName = async (name) => {
     const pokeApi = await getPokemonsApi()
     const dbPoke = await Pokemon.findAll({where: {
         name: name.toLowerCase()
+    }, include:{
+        model: Type,
+        through: {
+            attributes: []
+        },
+        attributes: ['name'],
     }});
     const filtrado = pokeApi.filter(e => e.name === name.toLowerCase())
     return [...dbPoke, ...filtrado]
 }
 const getPokeById = async (id, source) => {
     const apipoke = await getPokemonsApi()
-    const pokemon = source === "bdd" ? await findByPk(id, {
+    const pokemon = source === "bdd" ? await Pokemon.findAll({
+        where:{
+            id: id,
+        },
         include: {
             model: Type,
             through: {
